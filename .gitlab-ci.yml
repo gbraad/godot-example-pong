@@ -1,8 +1,9 @@
-image: gbraad/godot-server:2.1.4
 stages:
   - build
+  - publish
 
 build:linux:
+  image: gbraad/godot-server:2.1.4
   stage: build
   script:
     - mkdir -p public/linux
@@ -14,6 +15,7 @@ build:linux:
       - public
 
 build:windows:
+  image: gbraad/godot-server:2.1.4
   stage: build
   script:
     - mkdir -p public/windows
@@ -25,6 +27,7 @@ build:windows:
       - public
 
 build:html5:
+  image: gbraad/godot-server:2.1.4
   stage: build
   script:
     - mkdir -p public/html5
@@ -35,4 +38,31 @@ build:html5:
   artifacts:
     paths:
       - public
+
+publish:
+  image: docker:git
+  stage: publish
+  script:
+    - cd public
+    - git init
+    - git remote add github https://gbraad:$GITHUB_TOKEN@github.com/gbraad/godot-example-pong.git
+    - git add .
+    - git config --global user.email "me@gbraad.nl"
+    - git config --global user.name "Gerard Braad"
+    - "git commit -m 'Deployed by GitLab: https://gitlab.com/gbraad/godot-example-pong'"
+    - git branch -m gh-pages
+    - git push github :gh-pages || echo 1
+    - git push github gh-pages
+  when: manual  
+
+pages:
+  image: docker:git
+  stage: publish
+  script:
+    - echo
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
 
