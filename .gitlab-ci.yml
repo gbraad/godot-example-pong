@@ -24,3 +24,15 @@ build:windows:
     paths:
       - public
 
+build:html5:
+  stage: build
+  script:
+    - mkdir -p public/html5
+    - godot -export_debug "HTML5" public/html5/game.html
+    - mv public/html5/game.html public/html5/index.html
+  only:
+    - master
+  artifacts:
+    paths:
+      - public
+
