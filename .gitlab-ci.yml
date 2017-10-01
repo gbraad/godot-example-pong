@@ -53,7 +53,6 @@ publish:
     - git branch -m gh-pages
     - git push github :gh-pages || echo 1
     - git push github gh-pages
-  when: manual  
 
 pages:
   image: docker:git
